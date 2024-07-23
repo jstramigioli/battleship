@@ -1,10 +1,11 @@
 {
-  "name": "my-template",
+  "name": "battleship",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "jest",
+    "watch": "webpack --watch",
     "build": "webpack",
     "start": "webpack serve --open"
   },
