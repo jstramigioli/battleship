@@ -1,4 +1,4 @@
-const shipFactory = (length) => {
+const shipFactory = (length, id, orientation) => {
     let timesHit = 0
     let isSunk = false
     function hit() {
@@ -11,12 +11,11 @@ const shipFactory = (length) => {
     return {length,
         timesHit,
         hit,
-        isSunk
+        isSunk,
+        id,
+        orientation
     }
 }
 
-const ship = shipFactory(1)
-    ship.hit()
-    console.log(ship.timesHit)
 
 export {shipFactory}

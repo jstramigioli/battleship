@@ -1,6 +1,6 @@
 import { shipFactory } from "./ship-factory.js"
 
-const GameBoard = () => {
+const GameBoard = (id) => {
     const rows = 10
     const columns = 10
     const board = []
@@ -12,14 +12,17 @@ const GameBoard = () => {
         board.push(row)
     }
     const ships = []
+    
     function getSquare(row, col) {
         if (board[row] == undefined || board[row][col] == undefined) {
             return  null
         }
         return board[row][col]
     }
+
     function placeShip(size, orientation, startingPoint) {
-        const ship = shipFactory(size)
+        const ship = shipFactory(size, id+ships.length, orientation)
+        ship.start = startingPoint
         ships.push(ship)
         
         function assignShipToSquare(ship,square) {
@@ -74,7 +77,6 @@ const square = (row, col) => {
         hit: false
     }
 }
-/* const board = GameBoard()
-board.placeShip(2,'v',[11,11]) */
+
 
 export {GameBoard}

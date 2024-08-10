@@ -52,3 +52,142 @@ img {
 *, *:before, *:after {
     box-sizing: inherit;
   }
+
+#content {
+	background-color: rgb(42, 151, 165);
+	display: grid;
+	grid-template-columns: 1fr 2fr 2fr;
+	height: 100vh;
+	grid-template-rows: 12rem auto;
+	color: white;
+}
+
+header {
+	grid-column-start: 1;
+	grid-column-end: 4;
+	background-color: #314E77;
+	height: 12rem;
+	font-size: 48px;
+	padding-left: 2rem;
+	padding-top: 2rem;
+	
+}
+
+.game-content {
+	height: 100%;
+	grid-row-start: 2;
+	padding: 15px;
+}
+
+#player-info {
+	background-color: rgb(48, 78, 120);
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+#your-fleet {
+	background-color: rgb(79, 109, 150);
+}
+
+#your-targets {
+	background-color: rgb(120, 149, 191);
+}
+
+.frame {
+	border-style: dotted;
+	border-color: white;
+	border-width: 2px;
+	width: 100%;
+	height: auto;
+	display: flex;
+	justify-content: center;
+}
+
+.board {
+	display: grid;
+	grid-template-columns: repeat(10, 1fr);
+	grid-template-rows: repeat(10, 1fr);
+	gap: 3px;
+	position: relative;
+}
+
+.square {
+	height: 40px;
+	width: 40px;
+	background-color: white;
+	position: relative;
+}
+
+.square:hover {
+	opacity: 90%;
+}
+
+
+
+.hit {
+	background-color: gray;
+}
+
+.hit:hover {
+	opacity: 100%;
+}
+
+
+.hit .circle {
+	position: absolute;
+	width: 30%;
+    height: 30%;
+    background-color: white;
+    border-radius: 50%;
+	top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+	z-index: 2;
+}
+
+
+
+.hit.has-ship .circle {
+	position: absolute;
+	width: 45%;
+    height: 45%;
+    background-color: rgb(255, 160, 35);
+    border-radius: 50%;
+	top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+	
+}
+
+.ship {
+	background-color: #314E77;
+	position: absolute;
+	border-radius: 20px;
+	pointer-events: none;
+	top: 6px;
+}
+
+.ship.enemy {
+	display: none;
+}
+
+.ship.enemy.sunk {
+	display: block;
+}
+
+
+.ship.vertical {
+	transform: rotate(90deg);
+	transform-origin: 20px 14px;
+}
+
+
+.ships .ship {
+	background-color: white;
+	position: relative;
+}
+
+.ship.sunk {
+	background-color: rgb(65, 65, 65);
+}

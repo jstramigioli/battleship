@@ -1,29 +1,29 @@
 import { GameBoard } from "./GameBoard"
 
-const Player = () => {
-    const gameBoard = GameBoard()
+const Player = (id) => {
+    const gameBoard = GameBoard(id)
 
     function populateBoard() {
         gameBoard.placeShip(2, 'v', [0,0])
         gameBoard.placeShip(3, 'h', [3,2])
     }
 
-    populateBoard()
-
     return {
-        gameBoard
+        gameBoard,
+        populateBoard
     }
 }
 
-const PlayerPC = () => {
-    const player = Player()
+const PlayerPC = (id) => {
+    const player = Player(id)
     function populateBoard() {
-        gameBoard.placeShip(2, 'v', [5,5])
-        gameBoard.placeShip(3, 'h', [3,2])
+        player.gameBoard.placeShip(2, 'v', [5,5])
+        player.gameBoard.placeShip(4, 'h', [3,2])
     }
     return {
         ...player,
-        populateBoard
+        populateBoard,
+        isEnemy: true
     }
 }
 
