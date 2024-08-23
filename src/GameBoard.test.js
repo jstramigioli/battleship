@@ -121,3 +121,26 @@ it('Second ship is not sunk', () => {
     board.receiveAttack(7,5)
     expect(board.getShips()[1].isSunk).toBe(false)
 })
+
+it('checks if all ships are sunk', () => {
+    const board = GameBoard()
+    board.placeShip(3,'v',[5,5])
+    board.placeShip(2,'h',[0,0])
+    board.receiveAttack(5,5)
+    board.receiveAttack(6,5)
+    board.receiveAttack(7,5)
+    board.receiveAttack(0,0)
+    board.receiveAttack(0,1)
+    expect(board.checkIfAllSunk()).toBe(true)
+})
+
+it('checks if all ships are sunk, fails when not all are sunk', () => {
+    const board = GameBoard()
+    board.placeShip(3,'v',[5,5])
+    board.placeShip(2,'h',[0,0])
+    board.receiveAttack(5,5)
+    board.receiveAttack(6,5)
+    board.receiveAttack(7,5)
+    board.receiveAttack(0,0)
+    expect(board.checkIfAllSunk()).toBe(false)
+})

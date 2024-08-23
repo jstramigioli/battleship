@@ -1,5 +1,5 @@
 import { Player, PlayerPC } from "./Player.js";
-import { createBoard, updateSquare } from "./renderBoard.js";
+import { createMyBoard, createEnemyBoard, updateSquare } from "./renderBoard.js";
 
 
 function game() {
@@ -12,8 +12,8 @@ function game() {
     const enemyBoard = document.querySelector('#enemy-board')
 
     
-    createBoard(myBoard, player1)
-    createBoard(enemyBoard, player2)
+    createMyBoard(myBoard, player1)
+    createEnemyBoard(enemyBoard, player2, player1)
     updateSquare(player2.gameBoard.getSquare(3,5), enemyBoard)
 
 }

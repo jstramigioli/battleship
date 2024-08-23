@@ -12,6 +12,8 @@ const GameBoard = (id) => {
         board.push(row)
     }
     const ships = []
+
+    const ownSquaresHit = []
     
     function getSquare(row, col) {
         if (board[row] == undefined || board[row][col] == undefined) {
@@ -58,13 +60,21 @@ const GameBoard = (id) => {
         if (getSquare(row,col).ship) {
             getSquare(row,col).ship.hit()
         }
+        ownSquaresHit.push(getSquare(row,col))
+    }
+
+    function checkIfAllSunk() {
+        return ships.filter((ship) => ship.isSunk).length == ships.length
     }
 
     return {
+        board,
+        ownSquaresHit,
         getSquare,
         placeShip,
         getShips,
-        receiveAttack
+        receiveAttack,
+        checkIfAllSunk
     }
 }
 
