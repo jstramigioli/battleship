@@ -22,33 +22,49 @@ const GameBoard = (id) => {
         return board[row][col]
     }
 
-    function placeShip(size, orientation, startingPoint) {
+    function placeShip(size, orientation = Math.random() < 0.5 ? 'v' : 'h', startingPoint) {
         const ship = shipFactory(size, id+ships.length, orientation)
         ship.start = startingPoint
-        ships.push(ship)
+        
+
+        const squaresToAssignShips = []
         
         function assignShipToSquare(ship,square) {
             square.ship = ship
         }
         if (orientation === 'v') {
             for (let i = 0 ; i < size; i++) {
-                //ira this aca?
+                
                 if (!board[startingPoint[0]+i] || !board[startingPoint[0]+i][startingPoint[1]]) {
                     throw new Error('Position out of bounds')
                 }
-                assignShipToSquare(ships[ships.length-1],board[startingPoint[0]+i][startingPoint[1]])
+                const square = board[startingPoint[0]+i][startingPoint[1]]
+                if (square.ship) {
+                    throw new Error('There is a ship already in this square')
+                }
+                squaresToAssignShips.push(square)
 
             }
         }
         if (orientation === 'h') {
             for (let i = 0 ; i < size; i++) {
-                //ira this aca?
+                
                 if (!board[startingPoint[0]] || !board[startingPoint[0]][startingPoint[1]+i]) {
                     throw new Error('Position out of bounds')
                 }
-                assignShipToSquare(ships[ships.length-1],board[startingPoint[0]][startingPoint[1]+i])
+                const square = board[startingPoint[0]][startingPoint[1]+i]
+                if (square.ship) {
+                    throw new Error('There is a ship already in this square')
+                }
+                squaresToAssignShips.push(square)
             }
         }
+        ships.push(ship)
+        squaresToAssignShips.forEach((square) => {
+            assignShipToSquare(ship, square)
+        })
+        
+
     }
 
     function getShips() {

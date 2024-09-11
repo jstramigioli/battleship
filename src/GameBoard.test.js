@@ -30,6 +30,12 @@ it('Adds one ship to ships array', () => {
     expect(board.getShips().length).toBe(1)
 })
 
+it('Can place ship with undefined orientation', () => {
+    const board = GameBoard()
+    board.placeShip(2,undefined,[0,0])
+    expect(board.getShips()[0].orientation).toMatch(/^[vh]$/)
+})
+
 it('Adds two ships to ships array', () => {
     const board = GameBoard()
     board.placeShip(2,'v',[0,0])
@@ -67,6 +73,38 @@ it('Cant add ship out of board, starting point in board, horizontal', () => {
         board.placeShip(5,'h',[9,9])
 }
 ).toThrow('Position out of bounds')
+})
+
+it('Cant overlap 2 ships, same starting point', () => {
+    const board = GameBoard()
+    board.placeShip(3,'v',[0,0])
+    expect(() => {
+        board.placeShip(4,'v',[0,0])
+    }).toThrow('There is a ship already in this square')
+})
+
+it('Cant overlap 2 ships, vertical-vertical', () => {
+    const board = GameBoard()
+    board.placeShip(3,'v',[0,0])
+    expect(() => {
+        board.placeShip(4,'v',[2,0])
+    }).toThrow('There is a ship already in this square')
+})
+
+it('Cant overlap 2 ships, horizontal-horizontal', () => {
+    const board = GameBoard()
+    board.placeShip(3,'h',[0,0])
+    expect(() => {
+        board.placeShip(4,'h',[0,2])
+    }).toThrow('There is a ship already in this square')
+})
+
+it('Cant overlap 2 ships, vertical-horizontal', () => {
+    const board = GameBoard()
+    board.placeShip(3,'v',[0,2])
+    expect(() => {
+        board.placeShip(4,'h',[2,0])
+    }).toThrow('There is a ship already in this square')
 })
 
 it('Starts without hits', () => {

@@ -3,12 +3,43 @@ import { GameBoard } from "./GameBoard"
 const Player = (id) => {
     const gameBoard = GameBoard(id)
 
+    const ownSquaresArray = []
+
+    let won = false
+    
+    for (let i = 0 ; i < gameBoard.board.length ; i++) {
+        
+        for (let j = 0 ; j < gameBoard.board[i].length ; j++) {
+            
+            ownSquaresArray.push(gameBoard.board[i][j])
+        }
+    }
+
     function populateBoard() {
-        gameBoard.placeShip(1, 'v', [0,0])
-        /* gameBoard.placeShip(3, 'h', [3,2]) */
+        const shipSizes = [5,4,3,3,2,2,2]
+        /* const shipSizes = [2] */
+        
+        shipSizes.forEach((shipSizeElement) => {
+            let placed = false
+            while (!placed) {
+                
+                try {
+                    const startingSquare = ownSquaresArray.splice(Math.floor(Math.random() * ownSquaresArray.length), 1)[0]
+                    const startingPoint = [startingSquare.row, startingSquare.col]
+                    
+                    gameBoard.placeShip(shipSizeElement, undefined, startingPoint)
+                    placed = true
+                }
+                catch(error) {
+                    console.log(error.message);
+                }
+            }
+            
+        })
     }
 
     function playTurn(opponent, square) {
+        console.log(`yo clicke ${square.row} , ${square.col}`)
         opponent.gameBoard.receiveAttack(square.row, square.col)
         const squaresToUpdate = [{square,id}]
         if (opponent.gameBoard.checkIfAllSunk()) {
@@ -23,11 +54,8 @@ const Player = (id) => {
     }
 
     function win() {
-        console.log('you won')
-    }
-
-    function lose() {
-        console.log('you lose')
+        this.won = true
+        
     }
 
     return {
@@ -35,17 +63,12 @@ const Player = (id) => {
         populateBoard,
         playTurn,
         win,
-        lose
+        won,
     }
 }
 
 const PlayerPC = (id) => {
     const player = Player(id)
-    function populateBoard() {
-        player.gameBoard.placeShip(2, 'v', [5,5])
-        player.gameBoard.placeShip(4, 'h', [3,2])
-    }
-
     const squaresToAttack = []
     
     for (let i = 0 ; i < player.gameBoard.board.length ; i++) {
@@ -64,21 +87,22 @@ const PlayerPC = (id) => {
     }
 
     function playTurn(opponent, square = selectRandomSquareToAttack(opponent)) {
+        console.log(`pc ataco ${square.row} , ${square.col}`)
         opponent.gameBoard.receiveAttack(square.row, square.col)
         const squaresToUpdate = [{square,id}]
+        
         if (opponent.gameBoard.checkIfAllSunk()) {
-            opponent.lose()
+            this.win()
         }
         else {
             if (square.ship) {
-                squaresToUpdate.push(...this.playTurn(this))
+                squaresToUpdate.push(...this.playTurn(opponent))
             }
         }
         return squaresToUpdate
     }
     return {
         ...player,
-        populateBoard,
         playTurn
     }
 }

@@ -1,5 +1,39 @@
-const createMyBoard = (boardContainer, player) => {
+function initializeUI(newGame) {
+    const game = newGame()
+    const player1 = game.player1
+    const player2 = game.player2
+    const myBoard = document.querySelector('#my-board')
+    const enemyBoard = document.querySelector('#enemy-board')
+    createMyBoard(myBoard, player1)
+    createEnemyBoard(enemyBoard, player2, player1, newGame)
+    renderEnemyShips(player2)
+    const resetBtn = document.querySelector('.reset')
+    resetBtn.addEventListener('click', () => {
+        playAgain(newGame)})
+}
 
+function clearBoards() {
+    const myBoard = document.querySelector('#my-board')
+    myBoard.innerHTML = ''
+    const enemyBoard = document.querySelector('#enemy-board')
+    enemyBoard.innerHTML = ''
+    const enemyShipsContainer = document.querySelector('.ships')
+    enemyShipsContainer.innerHTML = ''
+}
+
+function playAgain(newGame) {
+    clearBoards()
+    const content = document.querySelector('#content')
+    if (document.querySelector('.endgame-container')) {
+        content.removeChild(content.lastChild)
+    }
+    initializeUI(newGame)
+    
+    
+}
+
+const createMyBoard = (boardContainer, player) => {
+ 
     function populateSquares() {
         for (let i = 0 ; i < 10 ; i++) {
             for (let j = 0 ; j < 10 ; j++) {
@@ -32,7 +66,7 @@ const createMyBoard = (boardContainer, player) => {
     
 }
 
-function createEnemyBoard(boardContainer, player, opponent) {
+function createEnemyBoard(boardContainer, player, opponent, newGame) {
     function populateSquares() {
         for (let i = 0 ; i < 10 ; i++) {
             for (let j = 0 ; j < 10 ; j++) {
@@ -41,9 +75,7 @@ function createEnemyBoard(boardContainer, player, opponent) {
                 square.dataset.column = j
                 square.classList.add('square')
                 square.classList.add('enemy')
-                square.addEventListener('click', (e) => {
-                        hitHandler(e)
-                })
+                square.addEventListener('click', hitHandler)
                 
                 boardContainer.appendChild(square) 
                 
@@ -62,25 +94,41 @@ function createEnemyBoard(boardContainer, player, opponent) {
         }
     }
 
+    function disablePlayerInteraction() {
+        const enemySquares = document.querySelectorAll('.enemy.square')
+        enemySquares.forEach((square) => {
+            square.removeEventListener('click', hitHandler)
+        })
+    }
+
+    function restorePlayerInteraction() {
+        const enemySquares = document.querySelectorAll('.enemy.square')
+        enemySquares.forEach((square) => {
+            square.addEventListener('click', hitHandler)
+        })
+    }
+
+    function setTurnMessage(msg) {
+        const turnMsg = document.querySelector('.message.frame')
+        turnMsg.textContent = msg
+    }
+
+    
+
     const hitHandler = (e) => {
+        
+
+
         const row = e.target.dataset.row
         const col = e.target.dataset.column
         const squareDOM = e.target
         const square = player.gameBoard.getSquare(row,col)
         const squaresToUpdate = opponent.playTurn(player, square)
-        
-        /* squaresToUpdate.forEach((el) => {
-            let boardToUpdate = boardContainer
-            if (el.id == '01') {
-                boardToUpdate = document.querySelector('#my-board')
-            }
-            updateSquare(el.square, boardToUpdate)
-            updateShips(el.square)
-            setTimeout((
+        disablePlayerInteraction()
+        setTurnMessage('PC playing')
 
-            )=>{},1000)
-        })
-         */
+        let delay = 0
+        
         for (let i = 0; i < squaresToUpdate.length ; i++) {
             const el = squaresToUpdate[i]
             let boardToUpdate = boardContainer
@@ -97,27 +145,55 @@ function createEnemyBoard(boardContainer, player, opponent) {
             updateSquare(el.square, boardToUpdate)
             updateShips(el.square)
             },i*1000)
+            delay = i*1000
             }
             
         }
 
-        
-        
+        if (player.won || opponent.won) {
+            const endgameContainer = document.createElement('div')
+            endgameContainer.classList.add('endgame-container')
+            const endgameMsg = document.createElement('div')
+            endgameMsg.classList.add('endgame-msg')
+            if (opponent.won) {
+                endgameMsg.textContent = 'You win'
+            }
+            else {
+                endgameMsg.textContent = 'You lose'
+            }
+            endgameContainer.appendChild(endgameMsg)
+            const playAgainBtn = document.createElement('button')
+            playAgainBtn.classList.add('play-again')
+            playAgainBtn.textContent = 'Play again?'
+            playAgainBtn.addEventListener('click', () => {
+                playAgain(newGame)})
+            endgameContainer.appendChild(playAgainBtn)
+            const content = document.querySelector('#content')
+            content.appendChild(endgameContainer)
+        }
+        else {
+            setTimeout(() => {
+                setTurnMessage('Your turn!')
+                restorePlayerInteraction()
+            }, delay)
+            
+        }
     }
-
+    
     populateSquares()
     placeShipsInBoard()
 }
 
-function renderEnemyShips() {
-    if (player.isEnemy) {
+function renderEnemyShips(enemy) {
+    
         const enemyShipsDisplay = document.querySelector('.ships.frame')
-        for (let i = 0 ; i < player.gameBoard.getShips().length ; i++) {
-            const ship = player.gameBoard.getShips()[i]
+        for (let i = 0 ; i < enemy.gameBoard.getShips().length ; i++) {
+            const ship = enemy.gameBoard.getShips()[i]
+            ship.orientation = 'h'
             const shipDom = createShipDom(ship)
             enemyShipsDisplay.appendChild(shipDom)
         }
-    }
+
 }
 
 const updateSquare = (square, boardDOM) => {
@@ -160,7 +236,8 @@ const createShipDom = (ship) => {
 
 
 
-export { createMyBoard,
-    createEnemyBoard,
-    updateSquare
+
+
+export { 
+    initializeUI
  }

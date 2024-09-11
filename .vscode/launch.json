@@ -4,6 +4,8 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
+
         {
             "name": "GameBoard",
             "program": "${workspaceFolder}/src/GameBoard.test.js",
@@ -14,6 +16,15 @@
             "type": "node"
         },
 
+        {
+            "name": "Player",
+            "program": "${workspaceFolder}/src/Player.test.mjs",
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
         
 
         {
